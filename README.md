@@ -2,7 +2,8 @@
 An interactive quiz focused on Arabic culture, language, and general knowledge.  
 Built using HTML, CSS, and JavaScript.
 ## Live Demo
-https://f1addict33.github.io/arab-quiz/
+[https://f1addict33.github.io/arab-quiz/](https://f1addict33.github.io/arab-quiz2/
+)
 ## Features
 - Multiple-choice quiz questions
 - Instant feedback on answers
