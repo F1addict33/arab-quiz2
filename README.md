@@ -21,5 +21,3 @@ Built using HTML, CSS, and JavaScript.
    OR
 3. Open the project in VS Code and use Live Server
 
-
-## Project Structure
