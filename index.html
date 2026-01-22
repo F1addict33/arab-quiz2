@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Levant Countries Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #c9a961;
+            --deep-blue: #1a2a4a;
+            --cream: #f5f0e8;
+            --terracotta: #c4785a;
+            --olive: #5a6b4a;
+            --sand: #d4c4a8;
+            --crimson: #8b0000;
+            --forest: #228b22;
+            --success: #2ecc71;
+            --error: #e74c3c;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: var(--cream);
+            color: var(--deep-blue);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .quiz-header {
+            position: relative;
+            height: 40vh;
+            background: linear-gradient(135deg, var(--deep-blue) 0%, #2d4a6a 50%, var(--terracotta) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 50px;
+        }
+
+        .header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23c9a961' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+            animation: patternFloat 30s linear infinite;
+        }
+
+        .quiz-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            color: var(--cream);
+            text-align: center;
+            z-index: 2;
+            text-shadow: 0 4px 30px rgba(0,0,0,0.3);
+            letter-spacing: 0.1em;
+        }
+
+        .quiz-subtitle {
+            text-align: center;
+            color: var(--gold);
+            font-size: 1.2rem;
+            margin-top: 10px;
+            letter-spacing: 0.3em;
+            opacity: 0.9;
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+        }
+
+        .quiz-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(26, 42, 74, 0.15);
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(201, 169, 97, 0.2);
+            transform: translateY(30px);
+            opacity: 0;
+            transition: all 0.6s ease;
+        }
+
+        .quiz-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .question {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(26, 42, 74, 0.1);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .question:last-of-type {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .question-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--gold);
+            color: var(--deep-blue);
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 15px;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--deep-blue);
+            line-height: 1.5;
+            margin-bottom: 25px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .options-container {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 20px 25px;
+            background: var(--cream);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            color: var(--deep-blue);
+        }
+
+        .option-label:hover {
+            transform: translateX(5px);
+            border-color: var(--gold);
+            background: rgba(201, 169, 97, 0.1);
+        }
+
+        .option-label.selected {
+            border-color: var(--gold);
+            background: rgba(201, 169, 97, 0.15);
+            box-shadow: 0 5px 15px rgba(201, 169, 97, 0.2);
+        }
+
+        .option-label.correct {
+            border-color: var(--success);
+            background: rgba(46, 204, 113, 0.1);
+        }
+
+        .option-label.incorrect {
+            border-color: var(--error);
+            background: rgba(231, 76, 60, 0.1);
+        }
+
+        .option-radio {
+            margin-right: 15px;
+            width: 22px;
+            height: 22px;
+            accent-color: var(--gold);
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .quiz-btn {
+            padding: 18px 40px;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Lato', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 0.05em;
+            min-width: 200px;
+            justify-content: center;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--gold), var(--terracotta));
+            color: white;
+        }
+
+        .reset-btn {
+            background: transparent;
+            color: var(--deep-blue);
+            border: 2px solid var(--deep-blue);
+        }
+
+        .quiz-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, var(--terracotta), var(--gold));
+        }
+
+        .reset-btn:hover {
+            background: var(--deep-blue);
+            color: white;
+        }
+
+        /* Results */
+        .results-container {
+            text-align: center;
+            padding: 50px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(26, 42, 74, 0.15);
+            margin-top: 40px;
+            border: 1px solid rgba(201, 169, 97, 0.2);
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.6s ease;
+        }
+
+        .results-container.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .score-display {
+            font-size: 5rem;
+            font-weight: bold;
+            color: var(--gold);
+            margin-bottom: 20px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .score-text {
+            font-size: 1.5rem;
+            color: var(--deep-blue);
+            margin-bottom: 30px;
+        }
+
+        .score-message {
+            font-size: 1.2rem;
+            color: var(--terracotta);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .celebration {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        .progress-container {
+            margin-bottom: 30px;
+            background: var(--cream);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold), var(--terracotta));
+            width: 0%;
+            transition: width 0.6s ease;
+            border-radius: 4px;
+        }
+
+        .progress-text {
+            text-align: right;
+            color: var(--deep-blue);
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .quiz-footer {
+            text-align: center;
+            padding: 40px;
+            background: var(--deep-blue);
+            color: var(--cream);
+            margin-top: 60px;
+        }
+
+        .footer-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-style: italic;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes patternFloat {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .quiz-header {
+                height: 30vh;
+            }
+
+            .quiz-card {
+                padding: 25px;
+            }
+
+            .buttons-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .quiz-btn {
+                width: 100%;
+                min-width: auto;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+            }
+
+            .option-label {
+                padding: 15px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .quiz-container {
+                padding: 0 15px;
+            }
+
+            .quiz-card {
+                padding: 20px;
+            }
+
+            .score-display {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-header">
+        <div class="header-overlay"></div>
+        <div>
+            <h1 class="quiz-title">Levant Quiz Challenge</h1>
+            <p class="quiz-subtitle">Test Your Knowledge</p>
+        </div>
+    </div>
+
+    <div class="quiz-container">
+        <div class="quiz-card" id="quizCard">
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">Question 1 of 15</div>
+            
+            <div id="quizContent"></div>
+
+            <div class="buttons-container">
+                <button class="quiz-btn submit-btn" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i>
+                    Submit Answers
+                </button>
+                <button class="quiz-btn reset-btn" id="resetBtn">
+                    <i class="fas fa-redo"></i>
+                    Try Again
+                </button>
+            </div>
+        </div>
+
+        <div class="results-container" id="resultsContainer">
+            <div class="celebration" id="celebrationEmoji">🏆</div>
+            <div class="score-display" id="finalScore">0/15</div>
+            <div class="score-text" id="scoreText">Your Score</div>
+            <div class="score-message" id="scoreMessage"></div>
+            <button class="quiz-btn reset-btn" id="retryBtn">
+                <i class="fas fa-redo"></i>
+                Try Again
+            </button>
+        </div>
+    </div>
+
+    <footer class="quiz-footer">
+        <p class="footer-quote">"Knowledge is the heritage of mankind, but ignorance is the private property of the few."</p>
+        <p>The Levant – Where History Meets Knowledge</p>
+    </footer>
+
+    <script>
+        const quizData = [
+            {
+                question: "Which of the following countries is not part of the Levant region?",
+                a: "Jordan",
+                b: "Lebanon",
+                c: "Egypt",
+                d: "Syria",
+                correct: "c",
+                explanation: "Egypt is part of North Africa, not the Levant region."
+            },
+            {
+                question: "What is the capital city of Lebanon?",
+                a: "Damascus",
+                b: "Beirut",
+                c: "Amman",
+                d: "Jerusalem",
+                correct: "b",
+                explanation: "Beirut is the capital and largest city of Lebanon."
+            },
+            {
+                question: "Which Levant country has the highest population?",
+                a: "Syria",
+                b: "Jordan",
+                c: "Lebanon",
+                d: "Palestine",
+                correct: "a",
+                explanation: "Syria has the largest population among Levant countries."
+            },
+            {
+                question: "What sea borders the Levant countries to the west?",
+                a: "Red Sea",
+                b: "Mediterranean Sea",
+                c: "Dead Sea",
+                d: "Arabian Sea",
+                correct: "b",
+                explanation: "The Mediterranean Sea forms the western border of the Levant."
+            },
+            {
+                question: "Which ancient civilization originated in the Levant region?",
+                a: "Phoenicians",
+                b: "Mayans",
+                c: "Incas",
+                d: "Vikings",
+                correct: "a",
+                explanation: "The Phoenician civilization originated in the Levant around 1500 BCE."
+            },
+            {
+                question: "What is the official language of all Levant countries?",
+                a: "English",
+                b: "French",
+                c: "Arabic",
+                d: "Turkish",
+                correct: "c",
+                explanation: "Arabic is the official language of all Levant countries."
+            },
+            {
+                question: "Which Levant city is considered one of the oldest continuously inhabited cities in the world?",
+                a: "Beirut",
+                b: "Amman",
+                c: "Damascus",
+                d: "Jerusalem",
+                correct: "c",
+                explanation: "Damascus, Syria has been continuously inhabited since around 10,000 BCE."
+            },
+            {
+                question: "What is the traditional Levantine breakfast dish made with chickpeas?",
+                a: "Hummus",
+                b: "Falafel",
+                c: "Ful Medames",
+                d: "Shakshuka",
+                correct: "c",
+                explanation: "Ful Medames is a traditional breakfast dish of cooked fava beans."
+            },
+            {
+                question: "Which Levant country has Petra as its most famous archaeological site?",
+                a: "Jordan",
+                b: "Lebanon",
+                c: "Syria",
+                d: "Palestine",
+                correct: "a",
+                explanation: "Petra is an ancient city carved into rock in southern Jordan."
+            },
+            {
+                question: "What is the name of the traditional Levantine musical instrument similar to a lute?",
+                a: "Oud",
+                b: "Sitar",
+                c: "Violin",
+                d: "Qanun",
+                correct: "a",
+                explanation: "The oud is a pear-shaped stringed instrument common in Levantine music."
+            },
+            {
+                question: "Which mountain range runs through Lebanon and Syria?",
+                a: "Atlas Mountains",
+                b: "Lebanon Mountains",
+                c: "Himalayas",
+                d: "Andes",
+                correct: "b",
+                explanation: "The Lebanon Mountains run parallel to the Mediterranean coast."
+            },
+            {
+                question: "What is the traditional Levantine dress for men called?",
+                a: "Thawb",
+                b: "Keffiyeh",
+                c: "Sherwal",
+                d: "All of the above",
+                correct: "d",
+                explanation: "All are components of traditional Levantine men's clothing."
+            },
+            {
+                question: "Which Levant country was once part of the Roman province of Syria Palestina?",
+                a: "Jordan",
+                b: "Lebanon",
+                c: "Palestine",
+                d: "All of them",
+                correct: "d",
+                explanation: "All Levant countries were part of various Roman provinces."
+            },
+            {
+                question: "What is the name of the traditional Levantine spice mixture?",
+                a: "Curry",
+                b: "Za'atar",
+                c: "Ras el Hanout",
+                d: "Baharat",
+                correct: "b",
+                explanation: "Za'atar is a Levantine spice blend of thyme, sumac, and sesame seeds."
+            },
+            {
+                question: "Which Levant city is famous for its ancient Roman ruins including Baalbek?",
+                a: "Aleppo",
+                b: "Byblos",
+                c: "Palmyra",
+                d: "Baalbek",
+                correct: "d",
+                explanation: "Baalbek in Lebanon has some of the best-preserved Roman ruins."
+            }
+        ];
+
+        const quizContent = document.getElementById('quizContent');
+        const submitBtn = document.getElementById('submitBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const retryBtn = document.getElementById('retryBtn');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const quizCard = document.getElementById('quizCard');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const finalScore = document.getElementById('finalScore');
+        const scoreMessage = document.getElementById('scoreMessage');
+        const celebrationEmoji = document.getElementById('celebrationEmoji');
+
+        let userAnswers = new Array(quizData.length).fill(null);
+        let isSubmitted = false;
+
+        function initQuiz() {
+            userAnswers.fill(null);
+            isSubmitted = false;
+            resultsContainer.classList.remove('visible');
+            quizCard.classList.add('visible');
+            renderQuiz();
+            updateProgress();
+        }
+
+        function renderQuiz() {
+            quizContent.innerHTML = '';
+            
+            quizData.forEach((questionData, index) => {
+                const questionEl = document.createElement('div');
+                questionEl.className = 'question';
+                questionEl.innerHTML = `
+                    <div class="question-number">${index + 1}</div>
+                    <div class="question-text">${questionData.question}</div>
+                    <div class="options-container">
+                        <label class="option-label ${userAnswers[index] === 'a' ? 'selected' : ''}" 
+                               data-index="${index}" data-value="a">
+                            <input type="radio" class="option-radio" name="question${index}" value="a" 
+                                   ${userAnswers[index] === 'a' ? 'checked' : ''}>
+                            ${questionData.a}
+                        </label>
+                        <label class="option-label ${userAnswers[index] === 'b' ? 'selected' : ''}" 
+                               data-index="${index}" data-value="b">
+                            <input type="radio" class="option-radio" name="question${index}" value="b" 
+                                   ${userAnswers[index] === 'b' ? 'checked' : ''}>
+                            ${questionData.b}
+                        </label>
+                        <label class="option-label ${userAnswers[index] === 'c' ? 'selected' : ''}" 
+                               data-index="${index}" data-value="c">
+                            <input type="radio" class="option-radio" name="question${index}" value="c" 
+                                   ${userAnswers[index] === 'c' ? 'checked' : ''}>
+                            ${questionData.c}
+                        </label>
+                        <label class="option-label ${userAnswers[index] === 'd' ? 'selected' : ''}" 
+                               data-index="${index}" data-value="d">
+                            <input type="radio" class="option-radio" name="question${index}" value="d" 
+                                   ${userAnswers[index] === 'd' ? 'checked' : ''}>
+                            ${questionData.d}
+                        </label>
+                    </div>
+                `;
+                quizContent.appendChild(questionEl);
+            });
+
+            document.querySelectorAll('.option-label').forEach(label => {
+                label.addEventListener('click', function() {
+                    if (isSubmitted) return;
+                    
+                    const index = parseInt(this.dataset.index);
+                    const value = this.dataset.value;
+                    
+                    document.querySelectorAll(`[data-index="${index}"]`).forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    this.classList.add('selected');
+                    userAnswers[index] = value;
+                    
+                    const radio = this.querySelector('.option-radio');
+                    radio.checked = true;
+                    
+                    updateProgress();
+                });
+            });
+        }
+
+        function updateProgress() {
+            const answered = userAnswers.filter(answer => answer !== null).length;
+            const total = quizData.length;
+            const percentage = (answered / total) * 100;
+            
+            progressBar.style.width = `${percentage}%`;
+            progressText.textContent = `Question ${answered + 1} of ${total} (${answered} answered)`;
+        }
+
+        function calculateScore() {
+            let score = 0;
+            const results = [];
+            
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === question.correct;
+                
+                if (isCorrect) {
+                    score++;
+                }
+                
+                results.push({
+                    question: question.question,
+                    userAnswer,
+                    correctAnswer: question.correct,
+                    isCorrect,
+                    explanation: question.explanation
+                });
+            });
+            
+            return { score, results };
+        }
+
+        function showResults() {
+            const { score, results } = calculateScore();
+            const percentage = Math.round((score / quizData.length) * 100);
+            
+            finalScore.textContent = `${score}/${quizData.length}`;
+            
+            let emoji = "😊";
+            let message = "";
+            
+            if (percentage >= 90) {
+                emoji = "🏆🎉";
+                message = "Excellent! You're a Levant expert!";
+            } else if (percentage >= 70) {
+                emoji = "⭐👍";
+                message = "Great job! You know the Levant well!";
+            } else if (percentage >= 50) {
+                emoji = "📚✨";
+                message = "Good effort! Keep learning about the Levant!";
+            } else {
+                emoji = "🌱💪";
+                message = "A good start! The Levant has much to discover!";
+            }
+            
+            celebrationEmoji.textContent = emoji;
+            scoreMessage.textContent = message;
+            
+            quizCard.classList.remove('visible');
+            setTimeout(() => {
+                resultsContainer.classList.add('visible');
+            }, 300);
+            
+            resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        submitBtn.addEventListener('click', () => {
+            const answered = userAnswers.filter(answer => answer !== null).length;
+            
+            if (answered < quizData.length) {
+                if (!confirm(`You've answered ${answered} out of ${quizData.length} questions. Submit anyway?`)) {
+                    return;
+                }
+            }
+            
+            isSubmitted = true;
+            showResults();
+        });
+
+        resetBtn.addEventListener('click', initQuiz);
+        retryBtn.addEventListener('click', initQuiz);
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        observer.observe(quizCard);
+        observer.observe(resultsContainer);
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initQuiz();
+            
+            document.querySelectorAll('.quiz-btn').forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
